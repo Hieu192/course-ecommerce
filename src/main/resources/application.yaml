@@ -1,0 +1,48 @@
+
+server:
+  port: 8080
+
+spring:
+  application:
+    name: "course"
+  datasource:
+    url: "jdbc:mysql://localhost:3306/course_udemy"
+    driverClassName: "com.mysql.cj.jdbc.Driver"
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 200MB
+      max-request-size: 200MB
+      file-size-threshold: 2KB
+
+jwt:
+  signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
+  valid-duration: 3600 # in second = 1 hours
+  expiration-refresh-token: 604800 # in seconds = 7 days
+
+cloudinary:
+  cloud-name: dh2zcmzaf
+  api-key: 531389551211796
+  api-secret: 2bD62mTqA6L-wGop9xENMrfu-hM
+
+#github:
+#  client:
+#    id: Ov23liYKvBAfzCvqcWfE
+#    secret: ba746ebf127c0aee5801bf57b071d13d2c328fed
+
+
+
+logging:
+  level:
+    com:
+      turkraft:
+        springfilter=DEBUG:
