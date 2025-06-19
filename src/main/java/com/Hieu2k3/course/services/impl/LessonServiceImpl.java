@@ -5,15 +5,12 @@ import com.Hieu2k3.course.dtos.requests.lesson.UploadLessonRequest;
 import com.Hieu2k3.course.dtos.responses.lesson.LessonProgressResponse;
 import com.Hieu2k3.course.dtos.responses.lesson.LessonResponse;
 import com.Hieu2k3.course.dtos.responses.lesson.UploadLessonResponse;
-import com.Hieu2k3.course.entity.Chapter;
-import com.Hieu2k3.course.entity.Course;
-import com.Hieu2k3.course.entity.Lesson;
+import com.Hieu2k3.course.entity.*;
 import com.Hieu2k3.course.exception.AppException;
 import com.Hieu2k3.course.exception.ErrorCode;
 import com.Hieu2k3.course.mapper.LessonMapper;
-import com.Hieu2k3.course.repository.ChapterRepository;
-import com.Hieu2k3.course.repository.CourseRepository;
-import com.Hieu2k3.course.repository.LessonRepository;
+import com.Hieu2k3.course.repository.*;
+import com.Hieu2k3.course.security.SecurityUtils;
 import com.Hieu2k3.course.services.CloudinaryService;
 import com.Hieu2k3.course.services.LessonService;
 import lombok.AccessLevel;
@@ -22,6 +19,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -41,6 +39,9 @@ public class LessonServiceImpl implements LessonService {
     CloudinaryService cloudinaryService;
     CourseRepository courseRepository;
     LessonMapper lessonMapper;
+    UserRepository userRepository;
+    EnrollmentRepository enrollmentRepository;
+    LessonProgressRepository lessonProgressRepository;
 
 
     @Override
@@ -84,7 +85,42 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    @PreAuthorize("isAuthenticated()")
+    @Transactional
     public LessonProgressResponse markLessonAsCompleted(LessonProgressRequest request) {
-        return null;
+        String email = SecurityUtils.getCurrentUserLogin()
+                .orElseThrow(() -> new AppException(ErrorCode.EMAIL_INVALID));
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_EXISTED));
+
+        Lesson lesson = lessonRepository.findById(request.getLessonId())
+                .orElseThrow(() -> new AppException(ErrorCode.LESSON_NOT_EXIST));
+
+        Course course = lesson.getChapter().getCourse();
+        if (!enrollmentRepository.existsByUserAndCourse(user, course)) {
+            throw new AppException(ErrorCode.COURSE_ACCESS_DENIED);
+        }
+
+        LessonProgress existingProgress = lessonProgressRepository.findByUserAndLesson(user, lesson);
+        if (existingProgress != null) {
+            return LessonProgressResponse.builder()
+                    .lessonId(existingProgress.getLesson().getId())
+                    .lessonName(existingProgress.getLesson().getLessonName())
+                    .isComplete(existingProgress.getCompleted())
+                    .build();
+        }
+
+        lessonProgressRepository.save(LessonProgress.builder()
+                .user(user)
+                .lesson(lesson)
+                .completed(true)
+                .build());
+
+        return LessonProgressResponse.builder()
+                .lessonId(lesson.getId())
+                .lessonName(lesson.getLessonName())
+                .isComplete(true)
+                .build();
     }
 }

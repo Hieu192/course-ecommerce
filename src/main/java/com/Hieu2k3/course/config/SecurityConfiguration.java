@@ -26,7 +26,11 @@ public class SecurityConfiguration {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final CustomJwtDecoder jwtDecoder;
 
-    private static final String[] PUBLIC_ENDPOINT = {
+    public static final String[] PUBLIC_ENDPOINT = {
+            "/swagger-ui/**",
+            "/swagger-ui/index.html",
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
             "/api/v1/auth/token",
             "/api/v1/register",
             "/api/v1/auth/logout",
@@ -63,7 +67,7 @@ public class SecurityConfiguration {
                                 .decoder(jwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
                         .authenticationEntryPoint(new JwtAuthenticationEntryPoint())) // không có token mà cần xác thực thì đc gọi trả về lỗi
-                .addFilterBefore(new CustomJwtAuthFilter(), BearerTokenAuthenticationFilter.class)
+//                .addFilterBefore(new CustomJwtAuthFilter(), BearerTokenAuthenticationFilter.class)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // không dùng session
 
         return httpSecurity.build();

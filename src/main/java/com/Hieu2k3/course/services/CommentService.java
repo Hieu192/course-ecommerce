@@ -15,8 +15,6 @@ public interface CommentService {
 
     UpdateCommentResponse updateCommentPost (Long commentId, UpdateCommentRequest request);
 
-
-
     PageResponse<CommentResponse> getCommentByLessonId(Long postId, int page, int size);
 
     CommentResponse addCommentLesson(CommentRequest request);

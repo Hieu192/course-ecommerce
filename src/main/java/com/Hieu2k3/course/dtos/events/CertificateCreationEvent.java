@@ -1,4 +1,4 @@
-package com.Hieu2k3.course.dtos.requests.favorite;
+package com.Hieu2k3.course.dtos.events;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -9,6 +9,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class FavoriteRequest {
-    Long id;
+public class CertificateCreationEvent {
+    Long userId;
+    Long courseId;
 }

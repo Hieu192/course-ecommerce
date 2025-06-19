@@ -4,10 +4,12 @@ import com.Hieu2k3.course.dtos.requests.comment.CommentRequest;
 import com.Hieu2k3.course.dtos.requests.comment.UpdateCommentRequest;
 import com.Hieu2k3.course.dtos.responses.comment.CommentResponse;
 import com.Hieu2k3.course.entity.Comment;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
-public interface CommemtMapper {
+@Mapper(componentModel = "spring")
+public interface CommentMapper {
 
     Comment toComment (CommentRequest request);
 

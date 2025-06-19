@@ -77,7 +77,9 @@ public enum ErrorCode {
     DELETE_POST_INVALID(400, "You can only delete posts that you own.", HttpStatus.BAD_REQUEST),
     EXPIRED_TOKEN(401, "EXPIRED_TOKEN", HttpStatus.UNAUTHORIZED),
     REFRESH_TOKEN_EXPIRED(401, "REFRESH_TOKEN_EXPIRED", HttpStatus.UNAUTHORIZED),
-    REFRESH_TOKEN_REVOKED(401, "REFRESH_TOKEN_REVOKED", HttpStatus.UNAUTHORIZED);
+    REFRESH_TOKEN_REVOKED(401, "REFRESH_TOKEN_REVOKED", HttpStatus.UNAUTHORIZED),
+    LESSON_NOT_EXIST(400, "Lesson not exist.", HttpStatus.BAD_REQUEST),
+    COURSE_ACCESS_DENIED(400, "Course access denied", HttpStatus.BAD_REQUEST);
     ;
 
     private int code;

@@ -24,6 +24,14 @@ spring:
       max-request-size: 200MB
       file-size-threshold: 2KB
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+    enable: true
+  swagger-ui:
+    path: /swagger-ui/index.html
+    enabled: true
+
 jwt:
   signerKey: "1TjXchw5FloESb63Kc+DFhTARvpWL4jUGCwfGWxuG5SIf/1y/LgJxHnMqaF6A/ij"
   valid-duration: 3600 # in second = 1 hours

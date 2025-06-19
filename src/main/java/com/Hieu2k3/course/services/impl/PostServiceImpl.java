@@ -20,11 +20,16 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -61,14 +66,28 @@ public class PostServiceImpl implements PostService {
     @Override
     @PreAuthorize("isAuthenticated()")
     public PageResponse<PostResponse> getAllPost(Specification<Post> spec, int page, int size) {
-        return null;
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(page -1, size, sort);
+        Page<Post> posts = postRepository.findAll(spec, pageable);
+
+        List<PostResponse> postResponses = posts.getContent()
+                .stream().map(postMapper::toPostResponse)
+                .toList();
+
+        return PageResponse.<PostResponse>builder()
+                .currentPage(page)
+                .pageSize(pageable.getPageSize())
+                .totalElements(posts.getTotalElements())
+                .totalPages(posts.getTotalPages())
+                .data(postResponses)
+                .build();
     }
 
 
-    @PreAuthorize("isAuthenticated()")
-    public PageResponse<PostResponse> getAllPostV2(Specification<Post> spec, int page, int size) {
-        return null;
-    }
+//    @PreAuthorize("isAuthenticated()")
+//    public PageResponse<PostResponse> getAllPostV2(Specification<Post> spec, int page, int size) {
+//        return null;
+//    }
 
     @Override
     @PreAuthorize("isAuthenticated()")
